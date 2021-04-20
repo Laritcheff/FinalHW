@@ -1,0 +1,22 @@
+
+.app-holder{
+width:80%;
+height:500px;
+margin:0 auto;
+display:flex;
+flex-direction: row;
+gap:30px;
+}
+
+.left-block{
+flex:0 1 35wh;
+border:2px solid black;
+}
+.central-block{
+border:2px solid black;
+flex:1 1 500px;}
+
+.right-block{
+flex:0 1 200px;
+border:2px solid black;
+}
