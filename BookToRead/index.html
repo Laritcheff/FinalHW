@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <head>
   <title>BookToRead</title>
   <link rel="stylesheet" type="text/css" href="style.css"/>
@@ -8,24 +7,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="HandheldFriendly" content="true">
-  <script></script>
+<script async src="js/index.js" type="module"></script>
 </head>
-
 <body>
   <div class="wrapper">
     <div class="app-holder">
       <div class="left-block">
-        <div class="searchArea"> <input id="searchInput" />
+        <form class="searchArea"> <input id="searchInput"/>
           <button id="searchBtn">Search</button>
-        </div>
-        <div id="searchTesultHolder">result</div>
+        </form>
+        <div id="searchResultHolder">result</div>
         <div class="statisticArea">Statistic</div>
       </div>
       <div class="central-block" id="bookInfoHolder">Central</div>
       <div class="right-block">Right</div>
     </div>
-
-
   </div>
 </body>
 
