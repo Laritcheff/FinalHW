@@ -9,11 +9,7 @@ gap:10px;
 background-color: aqua;
 
 }
-.searchArea{
-position:sticky;
-top:0;
-left:0;
-}
+
 .left-block{
 flex:0 1 35wh;
 border:2px solid black;
@@ -26,8 +22,6 @@ flex:1 1 500px;}
 flex:0 1 200px;
 border:2px solid black;
 }
-.selected-item{
-font-weight: bold;
-height:25px;
-text-align: center;;
-}
+
+
+/*# sourceMappingURL=/style.e308ff8e.css.map */
