@@ -20,7 +20,8 @@ border:2px solid black;
 }
 .central-block{
 border:2px solid black;
-flex:1 1 500px;}
+flex:1 1 500px;
+width:900px;}
 
 .right-block{
 flex:0 1 200px;

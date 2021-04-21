@@ -6,11 +6,14 @@ export class BooksUI {
   api;
 
   constructor(api) {
+    let hasFullText;
+    let subtitle;
     this.searchResultHolder = document.getElementById("searchResultHolder");
 
     const bookInfoHolder = document.getElementById("bookInfoHolder");
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
+    const toReadList = document.getElementById("toReadList");
 
     searchBtn.addEventListener("click", (event) => {
       event.preventDefault();
@@ -40,13 +43,59 @@ export class BooksUI {
       }
 
       this.selectedBook = selectedBook;
-      targetDiv.classList.add("selected-item");
+      targetDiv.classList.add("selected-item");     
 
-      localStorage.setItem(id, selectedBook.author_name[0]);
-      console.log(selectedBook.author_name[0]);
+      //check
+      if (selectedBook.has_fulltext) {
+        hasFullText = "Yes";
+      } else {
+        hasFullText = "No";
+      }
+      if (selectedBook.subtitle) {
+        subtitle = selectedBook.subtitle;
+      } else {
+        subtitle = "";
+      }
 
-      bookInfoHolder.innerHTML = selectedBook.author_name[0];
-    });
+      const bookInfo = `<h2>${selectedBook.title}</h2>
+        <h3>${subtitle}</h3>
+      <h4>${selectedBook.author_name}</h4>
+      <p>Full text available: ${hasFullText}</p>
+      <p>Languages:${selectedBook.language.join(", ")}</p>
+      <p>First publish year: ${selectedBook.first_publish_year}</p>  
+     <p>Years published: ${selectedBook.publish_year.join(", ")}</p>
+     <button class="addToList">Add Book to Read List</button>
+      `;  
+
+const bookInfoToRead = `<h2>${selectedBook.title}</h2>
+      <h3>${subtitle}</h3>
+      <h4>${selectedBook.author_name}</h4>
+      <button class="markAsRead">Mark as read</button>
+      <button class="remove">Remove</button>`; 
+        bookInfoHolder.innerHTML = bookInfo; 
+     
+
+
+      const addToListBtn=bookInfoHolder.querySelector(".addToList");
+      addToListBtn.addEventListener("click", (event)=>{  
+
+for(let i=0; i<localStorage.length; i++) {
+  let key = localStorage.key(i);
+  if(id!=key){
+  console.log(`${key}: ${id}`);}
+}
+
+
+        let toReadDiv=document.createElement("div");
+for (let key in localStorage) {  if(key!=id){
+
+        toReadList.prepend(toReadDiv);
+       toReadDiv.innerHTML=bookInfoToRead;
+    localStorage.setItem(id, bookInfoToRead);
+            
+        toReadList.append = `<div>${localStorage.getItem(key)}</div>`;   }   }
+      });
+   });
   }
 
   processSearchResult(page) {
@@ -64,4 +113,8 @@ export class BooksUI {
     }, "");
     this.searchResultHolder.innerHTML = bookHTML;
   }
+}
+
+function addToReadList(id, bookInfo) {
+  localStorage.setItem(this.id, this.bookInfo);
 }
