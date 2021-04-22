@@ -43,7 +43,7 @@ export class BooksUI {
       }
 
       this.selectedBook = selectedBook;
-      targetDiv.classList.add("selected-item");     
+      targetDiv.classList.add("selected-item");
 
       //check
       if (selectedBook.has_fulltext) {
@@ -57,45 +57,40 @@ export class BooksUI {
         subtitle = "";
       }
 
-      const bookInfo = `<h2>${selectedBook.title}</h2>
+      const bookInfo = `<div><h2>${selectedBook.title}</h2>
         <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4>
       <p>Full text available: ${hasFullText}</p>
       <p>Languages:${selectedBook.language.join(", ")}</p>
       <p>First publish year: ${selectedBook.first_publish_year}</p>  
      <p>Years published: ${selectedBook.publish_year.join(", ")}</p>
-     <button class="addToList">Add Book to Read List</button>
-      `;  
+     <button class="addToList">Add Book to Read List</button></div>
+      `;
+      bookInfoHolder.innerHTML = bookInfo;
 
-const bookInfoToRead = `<h2>${selectedBook.title}</h2>
+      const bookInfoToRead = `<h2>${selectedBook.title}</h2>
       <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4>
       <button class="markAsRead">Mark as read</button>
-      <button class="remove">Remove</button>`; 
-        bookInfoHolder.innerHTML = bookInfo; 
-     
+      <button class="remove" id="${id}">Remove</button>`;
 
+      const bookInfoToReadMarked = `<h2>${selectedBook.title}</h2>
+      <h3>${subtitle}</h3>
+      <h4>${selectedBook.author_name}</h4>
+      `;
 
-      const addToListBtn=bookInfoHolder.querySelector(".addToList");
-      addToListBtn.addEventListener("click", (event)=>{  
+      const addToListBtn = bookInfoHolder.querySelector(".addToList");
+      addToListBtn.addEventListener("click", (event) =>
+        addToReadList(id, bookInfoToRead)
+      );
 
-for(let i=0; i<localStorage.length; i++) {
-  let key = localStorage.key(i);
-  if(id!=key){
-  console.log(`${key}: ${id}`);}
-}
-
-
-        let toReadDiv=document.createElement("div");
-for (let key in localStorage) {  if(key!=id){
-
-        toReadList.prepend(toReadDiv);
-       toReadDiv.innerHTML=bookInfoToRead;
-    localStorage.setItem(id, bookInfoToRead);
-            
-        toReadList.append = `<div>${localStorage.getItem(key)}</div>`;   }   }
+      toReadList.addEventListener("click", (event) => {
+        if (event.target.classList == "remove") {
+          removeToReadListItem(event.target.id);
+        }
+        if (event.target.classList == "markAsRead") markAsRead(event.target.id);
       });
-   });
+    });
   }
 
   processSearchResult(page) {
@@ -115,6 +110,25 @@ for (let key in localStorage) {  if(key!=id){
   }
 }
 
-function addToReadList(id, bookInfo) {
-  localStorage.setItem(this.id, this.bookInfo);
+function addToReadList(id, bookInfoToRead) {
+  localStorage.setItem(id, bookInfoToRead);
+
+  const existsBook = toReadList.querySelector("#" + id);
+
+  if (!existsBook) {
+    const toReadDiv = document.createElement("div");
+    toReadDiv.id = id;
+    toReadList.prepend(toReadDiv);
+    toReadDiv.innerHTML = bookInfoToRead;
+  }
+}
+
+function removeToReadListItem(id) {
+  localStorage.removeItem(id);
+  toReadList.querySelector("#" + id).remove();
+}
+
+function markAsRead(id) {
+   toReadList.getElementById("#" + id).className("marked");
+  localStorage.setItem(id, bookInfoToReadMarked);
 }
