@@ -56,10 +56,13 @@ export class BooksUI {
       } else {
         subtitle = "";
       }
-      
+
       try {
         console.log(selectedBook.isbn[0]);
-        img = "http://covers.openlibrary.org/b/isbn/"+selectedBook.isbn[0]+"-M.jpg";
+        img =
+          "http://covers.openlibrary.org/b/isbn/" +
+          selectedBook.isbn[0] +
+          "-M.jpg";
         console.log(img);
       } catch {
         img = "";
@@ -83,7 +86,7 @@ export class BooksUI {
       <button class="remove">Remove</button>`;
 
       const bookInfoToReadMarked = `
-      <h2 class="marked">${selectedBook.title}</h2>
+      <h2>${selectedBook.title}</h2>
       <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4>
       `;
@@ -93,24 +96,29 @@ export class BooksUI {
         addToReadList(id, bookInfoToRead)
       );
 
-        toReadList.addEventListener("click", (event) => {
+      toReadList.addEventListener("click", (event) => {
         if (event.target.classList == "remove") {
           localStorage.removeItem(event.target.parentNode.id);
           event.target.parentNode.remove();
         }
-        if (event.target.classList == "markAsRead")
+        if (event.target.classList == "markAsRead") {
           event.target.parentNode.className = "marked";
-        localStorage.setItem(event.target.parentNode.id, bookInfoToReadMarked);
+          localStorage.setItem(
+            event.target.parentNode.id,
+            bookInfoToReadMarked
+          );
+        }
+        readStatistic();
       });
     });
   }
 
-  processSearchResult(page) {    
+  processSearchResult(page) {
     page.docs.forEach((item) => {
       item.id = item.key.split("/").pop();
     });
     this.currentPage = page.docs;
-
+    searchStat(page);
     const bookHTML = page.docs.reduce((acc, item) => {
       return (
         acc +
@@ -122,7 +130,7 @@ export class BooksUI {
   }
 }
 
-function addToReadList(id, bookInfoToRead) {
+function addToReadList(id, bookInfoToRead) {  
   localStorage.setItem(id, bookInfoToRead);
   const existsBook = toReadList.querySelector("#" + id);
   if (!existsBook) {
@@ -130,15 +138,49 @@ function addToReadList(id, bookInfoToRead) {
     toReadDiv.id = id;
     toReadList.append(toReadDiv);
     toReadDiv.innerHTML = bookInfoToRead;
+readStatistic();
   }
 }
-
+let read;
 onload = () => {
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     const toReadDiv = document.createElement("li");
-     toReadDiv.id = key;
-     toReadList.append(toReadDiv);
-     toReadDiv.innerHTML = localStorage.getItem(key);
+    toReadDiv.id = key;
+    toReadList.append(toReadDiv);
+    toReadDiv.innerHTML = localStorage.getItem(key);
+    if (!toReadDiv.querySelector("button")) {
+      toReadDiv.className = "marked";
+    }
   }
+  readStatistic();
 };
+
+//create rightStat
+function readStatistic(toReadDiv) {
+  const total = JSON.parse(localStorage.length);
+  const totalElem = document.querySelector(".total");
+  totalElem.innerHTML = `Total:${total}`;
+
+  const markedBook = document.getElementsByClassName("marked").length;
+  const wasRead = document.querySelector(".wasRead");
+  wasRead.innerHTML = `Was Read:${markedBook}`;
+}
+
+//create leftStat
+function searchStat(page) {
+  const numFound = page.numFound;
+  const start = page.start;
+  const pages = page.docs.length;
+  const searchStat = document.querySelector(".statisticArea");
+  const stat = `<h4>Found:${numFound}  Start:${start}  Pages:${pages}</h4>
+<a href="#" class="prevResult">PrevResult</a><a href="#" class="nextResult">Next Result</a>
+`;
+  searchStat.innerHTML = stat;
+}
+let pageNum=2;
+const statisticArea=document.querySelector('.statisticArea');
+    statisticArea.addEventListener("click", (event)=>{
+    if(event.target.classList=="prevResult"&&pageNum!=0){pageNum-=1;
+console.log(statisticArea);}
+    });
