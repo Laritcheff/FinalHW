@@ -2,6 +2,7 @@
 
 <head>
   <title>BookToRead</title>
+<link rel="stylesheet" href="reset.css" />
   <link rel="stylesheet" href="style.css" />
   <meta charset="utf-8">
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
@@ -10,7 +11,6 @@
   <meta name="HandheldFriendly" content="true">
   <script async src="js/index.js" type="module"></script>
 </head>
-
 <body>
   <div class="wrapper">
     <div class="app-holder">
@@ -18,12 +18,12 @@
         <form class="searchArea"> <input id="searchInput" />
           <button id="searchBtn">Search</button>
         </form>
-        <div id="searchResultHolder">result</div>
+        <div id="searchResultHolder"></div>
         <div class="statisticArea">Statistic</div>
       </div>
       <div class="central-block" id="bookInfoHolder">Central</div>
       <div class="right-block" id="toReadListHolder">Right
-        <div id="toReadList">toReadList</div>
+        <ul id="toReadList"></ul>
       </div>
     </div>
   </div>

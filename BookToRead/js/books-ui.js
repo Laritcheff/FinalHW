@@ -8,8 +8,8 @@ export class BooksUI {
   constructor(api) {
     let hasFullText;
     let subtitle;
+    let img;
     this.searchResultHolder = document.getElementById("searchResultHolder");
-
     const bookInfoHolder = document.getElementById("bookInfoHolder");
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
@@ -56,15 +56,23 @@ export class BooksUI {
       } else {
         subtitle = "";
       }
+      
+      try {
+        console.log(selectedBook.isbn[0]);
+        img = "http://covers.openlibrary.org/b/isbn/"+selectedBook.isbn[0]+"-M.jpg";
+        console.log(img);
+      } catch {
+        img = "";
+      }
 
-      const bookInfo = `<div><h2>${selectedBook.title}</h2>
+      const bookInfo = `<h2>${selectedBook.title}</h2>
         <h3>${subtitle}</h3>
-      <h4>${selectedBook.author_name}</h4>
+      <h4>${selectedBook.author_name}</h4><img src=${img}>
       <p>Full text available: ${hasFullText}</p>
       <p>Languages:${selectedBook.language.join(", ")}</p>
       <p>First publish year: ${selectedBook.first_publish_year}</p>  
-     <p>Years published: ${selectedBook.publish_year.join(", ")}</p>
-     <button class="addToList">Add Book to Read List</button></div>
+      <p>Years published: ${selectedBook.publish_year.join(", ")}</p>
+      <button class="addToList">Add Book to Read List</button>
       `;
       bookInfoHolder.innerHTML = bookInfo;
 
@@ -72,9 +80,10 @@ export class BooksUI {
       <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4>
       <button class="markAsRead">Mark as read</button>
-      <button class="remove" id="${id}">Remove</button>`;
+      <button class="remove">Remove</button>`;
 
-      const bookInfoToReadMarked = `<h2>${selectedBook.title}</h2>
+      const bookInfoToReadMarked = `
+      <h2 class="marked">${selectedBook.title}</h2>
       <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4>
       `;
@@ -84,16 +93,19 @@ export class BooksUI {
         addToReadList(id, bookInfoToRead)
       );
 
-      toReadList.addEventListener("click", (event) => {
+        toReadList.addEventListener("click", (event) => {
         if (event.target.classList == "remove") {
-          removeToReadListItem(event.target.id);
+          localStorage.removeItem(event.target.parentNode.id);
+          event.target.parentNode.remove();
         }
-        if (event.target.classList == "markAsRead") markAsRead(event.target.id);
+        if (event.target.classList == "markAsRead")
+          event.target.parentNode.className = "marked";
+        localStorage.setItem(event.target.parentNode.id, bookInfoToReadMarked);
       });
     });
   }
 
-  processSearchResult(page) {
+  processSearchResult(page) {    
     page.docs.forEach((item) => {
       item.id = item.key.split("/").pop();
     });
@@ -103,7 +115,7 @@ export class BooksUI {
       return (
         acc +
         `
-<div id="${item.id}" class="book-info">${item.title}</div>`
+       <div id="${item.id}" class="book-info">${item.title}</div>`
       );
     }, "");
     this.searchResultHolder.innerHTML = bookHTML;
@@ -112,23 +124,21 @@ export class BooksUI {
 
 function addToReadList(id, bookInfoToRead) {
   localStorage.setItem(id, bookInfoToRead);
-
   const existsBook = toReadList.querySelector("#" + id);
-
   if (!existsBook) {
-    const toReadDiv = document.createElement("div");
+    const toReadDiv = document.createElement("li");
     toReadDiv.id = id;
-    toReadList.prepend(toReadDiv);
+    toReadList.append(toReadDiv);
     toReadDiv.innerHTML = bookInfoToRead;
   }
 }
 
-function removeToReadListItem(id) {
-  localStorage.removeItem(id);
-  toReadList.querySelector("#" + id).remove();
-}
-
-function markAsRead(id) {
-   toReadList.getElementById("#" + id).className("marked");
-  localStorage.setItem(id, bookInfoToReadMarked);
-}
+onload = () => {
+  for (let i = 0; i < localStorage.length; i++) {
+    let key = localStorage.key(i);
+    const toReadDiv = document.createElement("li");
+     toReadDiv.id = key;
+     toReadList.append(toReadDiv);
+     toReadDiv.innerHTML = localStorage.getItem(key);
+  }
+};
