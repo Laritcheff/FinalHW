@@ -21,13 +21,14 @@ export class BooksUI {
       if (!querry) {
         alert();
       }
-
-      api.search(querry).then((page) => {
+    
+          api.search(querry,move()).then((page) => {
         this.processSearchResult(page);
       });
     });
 
     this.searchResultHolder.addEventListener("click", (event) => {
+     
       const targetDiv = event.target;
       const id = targetDiv.id;
       const selectedBook = this.currentPage.find((item) => item.id === id);
@@ -131,6 +132,7 @@ export class BooksUI {
 }
 
 function addToReadList(id, bookInfoToRead) {  
+StarFuan();
   localStorage.setItem(id, bookInfoToRead);
   const existsBook = toReadList.querySelector("#" + id);
   if (!existsBook) {
@@ -141,8 +143,8 @@ function addToReadList(id, bookInfoToRead) {
 readStatistic();
   }
 }
-let read;
-onload = () => {
+
+ export function StarFuan() {
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     const toReadDiv = document.createElement("li");
@@ -178,9 +180,12 @@ function searchStat(page) {
 `;
   searchStat.innerHTML = stat;
 }
-let pageNum=2;
-const statisticArea=document.querySelector('.statisticArea');
+
+
+function move(){
+    let pageNum=1;
+    const statisticArea=document.querySelector('.statisticArea');
     statisticArea.addEventListener("click", (event)=>{
-    if(event.target.classList=="prevResult"&&pageNum!=0){pageNum-=1;
-console.log(statisticArea);}
-    });
+    if(event.target.classList=="prevResult"&&pageNum>0){pageNum+=1;    }
+    return pageNum;
+    });}
