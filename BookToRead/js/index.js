@@ -1,5 +1,5 @@
-import {StarFuan} from "./books-ui.js";
-//StarFuan()
+//import {StartFunc} from "./books-ui.js";
+//StartFunc();
 
 import { Api } from "./api.js";
 import { BooksUI } from "./books-ui.js";

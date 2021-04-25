@@ -1,37 +1,58 @@
+StartFunc();
+
 export class BooksUI {
   searchResultHolder;
   bookInfoHolder;
   currentPage = [];
-
   api;
 
   constructor(api) {
     let hasFullText;
     let subtitle;
     let img;
+    let pageNum = 1;
+
     this.searchResultHolder = document.getElementById("searchResultHolder");
     const bookInfoHolder = document.getElementById("bookInfoHolder");
     const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
     const toReadList = document.getElementById("toReadList");
+    const statisticArea = document.querySelector(".statisticArea");
+    const searchBtn = document.querySelector("#searchBtn");
+    const leftBlock = document.querySelector(".leftBlock");
 
-    searchBtn.addEventListener("click", (event) => {
+    statisticArea.addEventListener("click", (event) => {
+      const querry = searchInput.value;
+      if (event.target.classList == "prevResult" && pageNum > 0) {
+        pageNum--;
+      }
+
+      if (event.target.classList == "nextResult") {
+        pageNum++;
+      }
+      api.search(querry, pageNum).then((page) => { 
+        this.processSearchResult(page);
+      });
+    });
+
+    searchBtn.addEventListener("click", (event) => {  
+ 
       event.preventDefault();
       const querry = searchInput.value;
       if (!querry) {
-        alert();
+        return;
       }
-    
-          api.search(querry,move()).then((page) => {
+
+      api.search(querry, pageNum).then((page) => {
         this.processSearchResult(page);
       });
     });
 
     this.searchResultHolder.addEventListener("click", (event) => {
-     
+
       const targetDiv = event.target;
       const id = targetDiv.id;
       const selectedBook = this.currentPage.find((item) => item.id === id);
+
       if (!selectedBook) {
         return;
       }
@@ -42,7 +63,6 @@ export class BooksUI {
         );
         selectedBook.classList.remove("selected-item");
       }
-
       this.selectedBook = selectedBook;
       targetDiv.classList.add("selected-item");
 
@@ -59,12 +79,10 @@ export class BooksUI {
       }
 
       try {
-        console.log(selectedBook.isbn[0]);
         img =
           "http://covers.openlibrary.org/b/isbn/" +
           selectedBook.isbn[0] +
           "-M.jpg";
-        console.log(img);
       } catch {
         img = "";
       }
@@ -97,7 +115,7 @@ export class BooksUI {
         addToReadList(id, bookInfoToRead)
       );
 
-      toReadList.addEventListener("click", (event) => {
+      toReadList.addEventListener("click", (event) => {       
         if (event.target.classList == "remove") {
           localStorage.removeItem(event.target.parentNode.id);
           event.target.parentNode.remove();
@@ -131,8 +149,7 @@ export class BooksUI {
   }
 }
 
-function addToReadList(id, bookInfoToRead) {  
-StarFuan();
+function addToReadList(id, bookInfoToRead) {
   localStorage.setItem(id, bookInfoToRead);
   const existsBook = toReadList.querySelector("#" + id);
   if (!existsBook) {
@@ -140,11 +157,11 @@ StarFuan();
     toReadDiv.id = id;
     toReadList.append(toReadDiv);
     toReadDiv.innerHTML = bookInfoToRead;
-readStatistic();
+    readStatistic();
   }
 }
 
- export function StarFuan() {
+function StartFunc() { 
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     const toReadDiv = document.createElement("li");
@@ -156,14 +173,13 @@ readStatistic();
     }
   }
   readStatistic();
-};
+}
 
 //create rightStat
 function readStatistic(toReadDiv) {
   const total = JSON.parse(localStorage.length);
   const totalElem = document.querySelector(".total");
   totalElem.innerHTML = `Total:${total}`;
-
   const markedBook = document.getElementsByClassName("marked").length;
   const wasRead = document.querySelector(".wasRead");
   wasRead.innerHTML = `Was Read:${markedBook}`;
@@ -180,12 +196,3 @@ function searchStat(page) {
 `;
   searchStat.innerHTML = stat;
 }
-
-
-function move(){
-    let pageNum=1;
-    const statisticArea=document.querySelector('.statisticArea');
-    statisticArea.addEventListener("click", (event)=>{
-    if(event.target.classList=="prevResult"&&pageNum>0){pageNum+=1;    }
-    return pageNum;
-    });}
