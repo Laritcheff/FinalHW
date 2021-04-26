@@ -4,6 +4,8 @@
   <title>BookToRead</title>
   <link rel="stylesheet" href="reset.css" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200&display=swap" rel="stylesheet">
   <meta charset="utf-8">
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,25 +13,29 @@
   <meta name="HandheldFriendly" content="true">
   <script async src="js/index.js" type="module"></script>
 </head>
+
 <body>
   <div class="wrapper">
     <div class="app-holder">
-      <div class="leftBlock">
+      <div class="left-block">
         <form class="searchArea"> <input id="searchInput" />
           <button id="searchBtn">Search</button>
         </form>
         <div id="searchResultHolder"></div>
         <div class="statisticArea"></div>
       </div>
-      <div class="central-block" id="bookInfoHolder">Central</div>
+      <div class="central-block">
+        <div id="bookInfoHolder">Information Box</div>
+      </div>
       <div class="right-block" id="toReadListHolder">
-        <div class="toReadStat"></div>
-        <h3 class="total"></h3>
-        <h3 class="wasRead"></h3>      
-      <ul id="toReadList"></ul>
+        <div class="toReadStat">
+          <h3 class="total"></h3>
+          <h3 class="wasRead"></h3>
+        </div>
+        <ul id="toReadList"></ul>
+      </div>
     </div>
-  </div>
-  
+
 </body>
 
 </html>

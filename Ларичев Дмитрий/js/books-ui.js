@@ -11,6 +11,7 @@ export class BooksUI {
     let subtitle;
     let img;
     let pageNum = 1;
+    let language;
 
     this.searchResultHolder = document.getElementById("searchResultHolder");
     const bookInfoHolder = document.getElementById("bookInfoHolder");
@@ -18,24 +19,31 @@ export class BooksUI {
     const toReadList = document.getElementById("toReadList");
     const statisticArea = document.querySelector(".statisticArea");
     const searchBtn = document.querySelector("#searchBtn");
-    const leftBlock = document.querySelector(".leftBlock");
 
     statisticArea.addEventListener("click", (event) => {
       const querry = searchInput.value;
-      if (event.target.classList == "prevResult" && pageNum > 0) {
+      if (event.target.classList == "prevResult" && pageNum > 1) {
         pageNum--;
       }
 
-      if (event.target.classList == "nextResult") {
+      if (
+        event.target.classList == "nextResult" &&
+        this.searchResultHolder.querySelectorAll(".book-info").length /
+          (pageNum * 100) >
+          0.1
+      ) {
         pageNum++;
       }
-      api.search(querry, pageNum).then((page) => { 
+      console.log(pageNum);
+      this.searchResultHolder.innerHTML = `<img src="img/load.gif" id="load"/>`;
+      api.search(querry, pageNum).then((page) => {
         this.processSearchResult(page);
       });
     });
 
-    searchBtn.addEventListener("click", (event) => {  
- 
+    searchBtn.addEventListener("click", (event) => {
+      this.searchResultHolder.innerHTML = `<img src="img/load.gif" id="load"/>`;
+      pageNum = 1;
       event.preventDefault();
       const querry = searchInput.value;
       if (!querry) {
@@ -48,11 +56,10 @@ export class BooksUI {
     });
 
     this.searchResultHolder.addEventListener("click", (event) => {
-
       const targetDiv = event.target;
       const id = targetDiv.id;
-      const selectedBook = this.currentPage.find((item) => item.id === id);
 
+      const selectedBook = this.currentPage.find((item) => item.id === id);
       if (!selectedBook) {
         return;
       }
@@ -61,7 +68,11 @@ export class BooksUI {
         const selectedBook = this.searchResultHolder.querySelector(
           "#" + this.selectedBook.id
         );
-        selectedBook.classList.remove("selected-item");
+        try {
+          selectedBook.classList.remove("selected-item");
+        } catch {
+          targetDiv.classList.add("selected-item");
+        }
       }
       this.selectedBook = selectedBook;
       targetDiv.classList.add("selected-item");
@@ -77,7 +88,12 @@ export class BooksUI {
       } else {
         subtitle = "";
       }
-
+      if (selectedBook.language) {
+        language = selectedBook.language;
+      } else {
+        selectedBook.language;
+        language = "no";
+      }
       try {
         img =
           "http://covers.openlibrary.org/b/isbn/" +
@@ -86,8 +102,8 @@ export class BooksUI {
       } catch {
         img = "";
       }
-
-      const bookInfo = `<h2>${selectedBook.title}</h2>
+      try {
+        const bookInfo = `<h2>${selectedBook.title}</h2>
         <h3>${subtitle}</h3>
       <h4>${selectedBook.author_name}</h4><img src=${img}>
       <p>Full text available: ${hasFullText}</p>
@@ -96,7 +112,10 @@ export class BooksUI {
       <p>Years published: ${selectedBook.publish_year.join(", ")}</p>
       <button class="addToList">Add Book to Read List</button>
       `;
-      bookInfoHolder.innerHTML = bookInfo;
+        bookInfoHolder.innerHTML = bookInfo;
+      } catch {
+        bookInfoHolder.innerHTML = "Invalid request";
+      }
 
       const bookInfoToRead = `<h2>${selectedBook.title}</h2>
       <h3>${subtitle}</h3>
@@ -107,15 +126,16 @@ export class BooksUI {
       const bookInfoToReadMarked = `
       <h2>${selectedBook.title}</h2>
       <h3>${subtitle}</h3>
-      <h4>${selectedBook.author_name}</h4>
-      `;
+      <h4>${selectedBook.author_name}</h4>`;
 
       const addToListBtn = bookInfoHolder.querySelector(".addToList");
-      addToListBtn.addEventListener("click", (event) =>
-        addToReadList(id, bookInfoToRead)
-      );
+      if (addToListBtn) {
+        addToListBtn.addEventListener("click", (event) =>
+          addToReadList(id, bookInfoToRead)
+        );
+      }
 
-      toReadList.addEventListener("click", (event) => {       
+      toReadList.addEventListener("click", (event) => {
         if (event.target.classList == "remove") {
           localStorage.removeItem(event.target.parentNode.id);
           event.target.parentNode.remove();
@@ -161,7 +181,11 @@ function addToReadList(id, bookInfoToRead) {
   }
 }
 
-function StartFunc() { 
+function StartFunc() {
+  const clearBtn = document.createElement("button");
+  toReadList.append(clearBtn);
+  clearBtn.innerHTML = "ClearAll";
+  clearBtn.classList.add("clearBtn");
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     const toReadDiv = document.createElement("li");
@@ -192,7 +216,20 @@ function searchStat(page) {
   const pages = page.docs.length;
   const searchStat = document.querySelector(".statisticArea");
   const stat = `<h4>Found:${numFound}  Start:${start}  Pages:${pages}</h4>
-<a href="#" class="prevResult">PrevResult</a><a href="#" class="nextResult">Next Result</a>
+<button class="prevResult">PrevResult</button><button class="nextResult">Next Result</button>
 `;
-  searchStat.innerHTML = stat;
+  if (page.docs.length != 0) {
+    searchStat.innerHTML = stat;
+  }
 }
+const clearBtn = document.querySelector(".clearBtn");
+clearBtn.addEventListener("click", (event) => {
+  const li = toReadList.querySelectorAll("li");
+  console.log(li[0]);
+  for (let i = 0; i < li.length; i++) {
+    li[i].remove();
+  }
+
+  localStorage.clear();
+  readStatistic();
+});

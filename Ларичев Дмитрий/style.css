@@ -1,0 +1,150 @@
+::-webkit-scrollbar {
+ width: 5px;
+}
+::-webkit-scrollbar-track {
+ border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+ 
+ background: -webkit-linear-gradient(to right, #111010, #f1f1ee);
+ background: linear-gradient(to right, #181818, #f0eeea);
+}
+::-webkit-scrollbar-thumb:hover {
+ background: #333;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000000;
+}
+
+
+
+.wrapper{
+font-size: 1.2em;
+font-family: 'Oswald', sans-serif;
+background: url(img/gears-1381719_1920.jpg) fixed no-repeat;
+background-size: cover;
+
+}
+
+#bookInfoHolder{
+padding: 10px;
+ background: linear-gradient(to right, #999999, #000);
+	}
+
+
+button{
+outline: none;
+color:rgb(126, 123, 113);
+width: 10vw;
+height:auto;
+background-color: rgb(49, 51, 51);
+border-radius: 5px;
+
+
+}
+.app-holder{padding: 0;
+height:100vh;
+margin:0 auto;
+display:flex;
+flex-direction: row;
+ background: linear-gradient(to top, rgba(50, 50, 50, 1), rgba(200, 200, 200, .7));
+}
+
+.searchArea{
+padding: 15px;
+background: linear-gradient(to right, #999999, #000);
+position:sticky;
+top:0;
+left:0;
+}
+
+.left-block{
+flex:0 1 20vw;
+overflow-y:auto;
+}
+
+.central-block{
+color:rgb(252, 248, 248);
+flex:1 1 40%;
+}
+
+.right-block{
+overflow: auto;
+flex:0 1 25%;
+}
+
+.toReadStat{
+margin-bottom:120px;
+background: linear-gradient(to right, #999999, #000);
+width:25%;
+text-align: center;
+position:fixed;
+top:0;
+right: 0;}
+
+#load{
+margin:3em;
+width:140px;
+}
+#toReadList{
+margin:10vh 1vw 0 1vw;
+overflow-y:auto;
+}
+#searchResultHolder{margin:5vh 0 20vh 0;}
+
+#searchResultHolder div, li {
+	    color: #fcf8f8;
+	    text-decoration: none;
+	    display: block;
+	    margin: 10px;
+	    background: linear-gradient(to right, #999999, #000);
+	    border-radius: 5px;
+	    padding: 5px;
+	    text-align: center;
+	    box-shadow: 10px 10px 40px rgba(0, 0, 0, .7);
+      width: auto;
+      height:auto;
+	}
+.marked{
+transition: 1.5s;
+}
+.marked button{
+display:none;
+}
+
+.statisticArea{
+color:white;
+min-height: 5vh;
+width:19vw;
+height:auto;
+padding: 5px;
+background: linear-gradient(to right, #999999, #000);
+color:darkgrey;
+position:fixed;
+bottom:0;
+left:0;
+}
+
+
+
+#searchResultHolder div:hover,li:hover {      
+	    box-shadow: 0 0 70px rgba(249, 249, 250, 0.5);
+	    transition-duration: .1s;
+
+	}
+
+.selected-item{
+      transition-duration: .3s;
+	    transform: scale(1.2);	
+       font-weight: bold;
+
+}
+
+button:hover{
+color:white;
+transition-duration: 0.3s;
+}
+
+
+
+h3, h4{color:white;}
